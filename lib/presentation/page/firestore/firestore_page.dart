@@ -1,3 +1,4 @@
+import 'package:d_info/d_info.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire/data/source/source_animal.dart';
@@ -17,6 +18,33 @@ class _FirestorePageState extends State<FirestorePage> {
   getAnimal() async {
     list = await SourceAnimal.gets();
     setState(() {});
+  }
+
+  optionMenu(String value, Map animal) {
+    if (value == 'update') {
+      Get.to(() => AddUpdateFirestorePage(animal: animal))?.then((value) {
+        if (value ?? false) {
+          // refresh list
+          getAnimal();
+        }
+      });
+    } else if (value == 'delete') {
+      delete(animal['id']);
+    }
+  }
+
+  delete(String id) async {
+    bool success = await SourceAnimal.delete(id);
+    if (success) {
+      DInfo.dialogSuccess('Success Delete Animal');
+      DInfo.closeDialog(actionAfterClose: () {
+        // refresh list
+        getAnimal();
+      });
+    } else {
+      DInfo.dialogError('Failed Delete Animal');
+      DInfo.closeDialog();
+    }
   }
 
   @override
@@ -52,6 +80,15 @@ class _FirestorePageState extends State<FirestorePage> {
                   ),
                   title: Text(animal['name']),
                   subtitle: Text(animal['type']),
+                  trailing: PopupMenuButton<String>(
+                    onSelected: (value) => optionMenu(value, animal),
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                          value: 'update', child: Text('Update')),
+                      const PopupMenuItem(
+                          value: 'delete', child: Text('Delete')),
+                    ],
+                  ),
                 );
               },
             ),

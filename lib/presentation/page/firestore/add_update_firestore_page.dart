@@ -40,7 +40,39 @@ class _AddUpdateFirestorePageState extends State<AddUpdateFirestorePage> {
     }
   }
 
-  updateAnimal() {}
+  updateAnimal() async {
+    bool success = await SourceAnimal.update({
+      'foot': controllerFoot.text,
+      'hasTail': hasTail,
+      'id': widget.animal!['id'],
+      'name': controllerName.text,
+      'type': controllerType.text,
+    });
+    if (success) {
+      DInfo.dialogSuccess('Success Update Animal');
+      DInfo.closeDialog(actionAfterClose: () {
+        Get.back(result: true);
+      });
+    } else {
+      DInfo.dialogError('Failed Update Animal');
+      DInfo.closeDialog();
+    }
+  }
+
+  @override
+  void initState() {
+    // is update
+    if (widget.animal != null) {
+      controllerFoot.text = widget.animal!['foot']
+          .toString(); // is int or string will be toString()
+      controllerName.text = widget.animal!['name'];
+      controllerType.text = widget.animal!['type'];
+      hasTail = widget.animal!['hasTail'];
+      setState(() {});
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
