@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 
 import 'auth/login_page.dart';
+import 'firestore/firestore_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,6 +23,16 @@ class HomePage extends StatelessWidget {
               Get.off(() => LoginPage());
             },
             icon: const Icon(Icons.logout),
+          ),
+        ],
+      ),
+      body: ListView(
+        children: [
+          ListTile(
+            onTap: () {
+              Get.to(() => FirestorePage());
+            },
+            title: Text('Firestore'),
           ),
         ],
       ),
